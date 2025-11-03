@@ -1,0 +1,35 @@
+meta: 
+  name: Justin Betts
+
+color: 
+  palette:
+    primary: "#AB0520"   #Arizona Red
+    secondary: "#0C234B" #Arizona Blue
+    link: "#1B6CA8"      #Dark blue 
+    background: "#F2F4F6" #Soft gray
+    success: "#8FA67B"   #Sage green
+    info: "#4B7F9E"      #Mute blue
+    warning: "#A95C42"   #Mesa
+    danger: "#EF4056"    #Bloom
+    light: "#F5F5F0"     #Off-white
+    dark: "#4A5859"      #Dark slate
+    gray: "#E0E0D8"      #Warm gray
+    accent: "#7A9E9F"    #Mute teal
+    black: "#000000"     #Black
+  background: background
+  primary: primary
+  secondary: secondary
+  danger: danger
+  
+typography: 
+  fonts: 
+    - family: Public Sans
+      source: google
+    - family: Inter
+      source: google
+  base: Public Sans
+  headings: 
+    family: Inter
+    weight: 600
+    color: black
+
