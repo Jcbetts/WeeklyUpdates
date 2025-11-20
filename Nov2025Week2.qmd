@@ -12,7 +12,7 @@ format: html
 
 library(DT)
 library(tidyverse)
-library(rsconnect)
+# library(rsconnect)
 ```
 
 ```{r echo=FALSE, eval=FALSE}
@@ -286,4 +286,5 @@ Mostly, these are passes counted for specific classes that aren't tied to a faci
 To capture all pass usage, I've included additional passes, like Group Fitness passes, and excluded CREC Employee passes. So there is some overlap between students swiping in and then checking-in to their program. I've also hard-coded a two-minute cooldown for swipes, which doesn't appear to be applied to the Pass Visit Log in RecTrac.
 
 **Why isn't my program or pass represented in this report?**
+
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
