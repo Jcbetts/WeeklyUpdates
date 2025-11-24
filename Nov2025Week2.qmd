@@ -279,8 +279,8 @@ comparison_table(UnassignedCompare)
 
 <br>
 
-**South Rec on Saturday**
-South Rec received clients for two hours on Saturday, which is responsible for the sharp decline.
+**Saturday Closures**
+South Rec received clients for two hours on Saturday and Bear Down received no clients, which is responsible for the sharp decline.
 
 **Why is there an "Unassigned" tab?**
 Mostly, these are passes counted for specific classes that aren't tied to a facility. Sometimes it'll catch student passes. They're here to ensure everything is complete.
@@ -291,6 +291,7 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 **Why isn't my program or pass represented in this report?**
 
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
 
 
 
