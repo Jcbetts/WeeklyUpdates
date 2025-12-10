@@ -1,6 +1,6 @@
 ---
 title: "Weekly Pass Use Comparison"
-subtitle: "11.25.24 - 12.1.24 vs. 11.24.25 - 11.30.25"
+subtitle: "12.2.24 - 12.8.24 vs. 12.1.25 - 12.7.25"
 theme: _brand.yml
 format: html
 ---
@@ -93,7 +93,7 @@ create_pass_comparison <- function(data) {
 }
 
 # function to create comparison plots
-create_plot <- function(data, title, y_limit, subtitle = "Last Week of November") {
+create_plot <- function(data, title, y_limit, subtitle = "First Week of December") {
   
   # Prepare data
   plot_data <- data |> 
@@ -178,12 +178,12 @@ BDRECPassCompare <- create_pass_comparison(BDRec)
 S91PassCompare <- create_pass_comparison(S91)
 UnassignedCompare <- create_pass_comparison(Unassigned)
 
-TotalPlotFinal <- create_plot(FullData, "Total Pass Usage by Day of the Week", 4000)
-SouthPlot <- create_plot(SouthRec, "South Rec Pass Usage by Day of the Week", 3000)
-NorthPlot <- create_plot(NorthRec, "North Rec Visits by Day of the Week", 1250)
-BDPlot <- create_plot(BDRec, "Bear Down Rec Pass Usage by Day of the Week", 125)
-S91Plot <- create_plot(S91, "Studio 91 Pass Usage by Day of the Week", 35)
-UnassignedPlot <- create_plot(Unassigned, "Unassigned Pass Usage by Day of the Week", 20) 
+TotalPlotFinal <- create_plot(FullData, "Total Pass Usage by Day of the Week", 6000)
+SouthPlot <- create_plot(SouthRec, "South Rec Pass Usage by Day of the Week", 4000)
+NorthPlot <- create_plot(NorthRec, "North Rec Visits by Day of the Week", 1700)
+BDPlot <- create_plot(BDRec, "Bear Down Rec Pass Usage by Day of the Week", 150)
+S91Plot <- create_plot(S91, "Studio 91 Pass Usage by Day of the Week", 45)
+UnassignedPlot <- create_plot(Unassigned, "Unassigned Pass Usage by Day of the Week", 80) 
 
 SenSource <- tibble(Facility = "SenSource", Visits24 = "Coming Soon", Visits25 = "Coming Soon", PercentChange = "Coming Soon")
 
@@ -339,3 +339,4 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 **Why isn't my program or pass represented in this report?**
 
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
