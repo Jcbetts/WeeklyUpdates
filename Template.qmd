@@ -1,6 +1,6 @@
 ---
 title: "Weekly Pass Use Comparison"
-subtitle: "12.2.24 - 12.8.24 vs. 12.1.25 - 12.7.25"
+subtitle: "12.9.24 - 12.15.24 vs. 12.8.25 - 12.14.25"
 theme: _brand.yml
 format: html
 ---
@@ -93,7 +93,7 @@ create_pass_comparison <- function(data) {
 }
 
 # function to create comparison plots
-create_plot <- function(data, title, y_limit, subtitle = "First Week of December") {
+create_plot <- function(data, title, y_limit, subtitle = "Second Week of December") {
   
   # Prepare data
   plot_data <- data |> 
@@ -330,6 +330,7 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 **Why isn't my program or pass represented in this report?**
 
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
 
 
 
