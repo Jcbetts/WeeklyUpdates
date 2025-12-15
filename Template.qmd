@@ -185,7 +185,7 @@ BDPlot <- create_plot(BDRec, "Bear Down Rec Pass Usage by Day of the Week", 150)
 S91Plot <- create_plot(S91, "Studio 91 Pass Usage by Day of the Week", 45)
 UnassignedPlot <- create_plot(Unassigned, "Unassigned Pass Usage by Day of the Week", 100) 
 
-SenSource <- tibble(Facility = "Bear Down Building", Visits24 = "11692", Visits25 = "12251", PercentChange = "4.8")
+SenSource <- tibble(Facility = "Bear Down Building", Visits24 = "8792", Visits25 = "8972", PercentChange = "2.1")
 
 facility_overview <- bind_rows(
   TotalPassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "Total Campus"),
@@ -330,6 +330,7 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 **Why isn't my program or pass represented in this report?**
 
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
 
 
 
