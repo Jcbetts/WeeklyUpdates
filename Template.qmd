@@ -18,7 +18,7 @@ library(rsconnect)
 ```
 
 ```{r eval=FALSE}
-rsconnect::writeManifest()
+# rsconnect::writeManifest()
 ```
 
 ```{r}
@@ -329,3 +329,4 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 
 **Why isn't my program or pass represented in this report?**
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
