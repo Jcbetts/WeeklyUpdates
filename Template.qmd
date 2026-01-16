@@ -24,7 +24,7 @@ library(tidyverse)
 ```{r}
 #| label: data
 
-ay_2024 <- read_rds("Data/January/Week2/2024_B.rds")
+ay_2024 <- read_rds("Data/January/Week2/2024.rds")
 ay_2025 <- read_rds("Data/January/Week2/2025.rds")
 ay_2026 <- read_rds("Data/January/Week2/2026.rds")
 full_data <- rbind(ay_2024, ay_2025, ay_2026)
@@ -329,5 +329,6 @@ To capture all pass usage, I've included additional passes, like Group Fitness p
 
 **Why isn't my program or pass represented in this report?**
 Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
+
 
 
