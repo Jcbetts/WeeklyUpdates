@@ -1,0 +1,331 @@
+---
+title: "Weekly Pass Use Comparison"
+subtitle: "First Full Week of January"
+theme: _brand.yml
+execute: 
+  echo: false
+format: html
+---
+
+```{r}
+#| label: libraries
+#| warning: false
+
+library(DT)
+library(tidyverse)
+library(rsconnect)
+
+```
+
+```{r eval=FALSE}
+rsconnect::writeManifest()
+```
+
+```{r}
+#| label: data
+
+ay_2024 <- read_rds("Data/January/Week2/2024_B.rds")
+ay_2025 <- read_rds("Data/January/Week2/2025.rds")
+ay_2026 <- read_rds("Data/January/Week2/2026.rds")
+full_data <- rbind(ay_2024, ay_2025, ay_2026)
+
+```
+
+```{r}
+
+# create new columns to make it easier to select specific academic years
+full_data <- full_data |>
+    mutate(visit_24 = ifelse(year(Date) == 2024, 1, 0),
+           visit_25 = ifelse(year(Date) == 2025, 1, 0),
+           visit_26 = ifelse(year(Date) == 2026, 1, 0))
+
+```
+
+```{r}
+#| label: sort facility data
+
+south_rec <- full_data |> 
+    filter(Facility == "1")
+
+north_rec <- full_data |> 
+    filter(Facility == "2")
+
+bd_rec <- full_data |> 
+    filter(Facility == "3")
+
+s91 <- full_data |> 
+    filter(Facility == "4")
+
+unassigned <- full_data |> 
+  filter(Facility == "5")
+
+```
+
+```{r}
+#| label: build functions for datasets
+
+# Function to create pass comparison with totals
+create_pass_comparison <- function(data) {
+  
+  # Calculate totals
+  totals <- data |>
+    summarize(
+      Pass_Type = "Total",
+      Visits24 = sum(visit_24, na.rm = TRUE),
+      Visits25 = sum(visit_25, na.rm = TRUE),
+      Visits26 = sum(visit_26, na.rm = TRUE)
+    )
+  
+  # Calculate by pass type
+  by_pass <- data |>
+    group_by(Pass_Type) |>
+    summarize(
+      Visits24 = sum(visit_24, na.rm = TRUE),
+      Visits25 = sum(visit_25, na.rm = TRUE),
+      Visits26 = sum(visit_26, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
+  # Combine and return
+  bind_rows(totals, by_pass)
+}
+
+# function to create comparison plots
+create_plot <- function(data, title, y_limit = NULL, subtitle = "First Week of January", padding = 1.15) {
+  
+  # Prepare data
+  plot_data <- data |> 
+    mutate(Day = wday(Date, label = TRUE, abbr = FALSE),
+           Year = year(Date)) |> 
+    group_by(Day, Year) |> 
+    summarize(TotalVisits = n(), .groups = "drop") |> 
+    complete(Day = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+      Year,
+      fill = list(TotalVisits = 0)) |> 
+    mutate(Day = factor(Day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")))
+
+  if (is.null(y_limit)) {
+    y_limit <- max(plot_data$TotalVisits, na.rm = TRUE) * padding
+  }
+  
+  # Calculate averages
+  mean_24 <- plot_data |>
+    filter(Year == 2024) |>
+    summarize(mean.visits = mean(TotalVisits)) |> 
+    pull(mean.visits)
+  
+  mean_25 <- plot_data |>
+    filter(Year == 2025) |>
+    summarize(mean.visits = mean(TotalVisits)) |> 
+    pull(mean.visits)
+
+  mean_26 <- plot_data |> 
+    filter(Year == 2026) |> 
+    summarize(mean.visits = mean(TotalVisits)) |> 
+    pull(mean.visits)
+  
+  # Create plot
+  ggplot(plot_data, aes(x = Day, y = TotalVisits, color = factor(Year), group = Year)) +
+    geom_line(linewidth = 0.8) +
+    geom_point(aes(fill = factor(Year)), size = 2.3, shape = 21, color = "white", stroke = 1) +
+    scale_color_manual(
+      values = c("2024" = "gray70", "2025" = "gray40", "2026" = "#AB0520"),
+      name = "Year") +
+    scale_fill_manual(
+      values = c("2024" = "gray70", "2025" = "gray40", "2026" = "#AB0520"),
+      name = "Year") +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, y_limit)) +
+    labs(
+      title = title,
+      subtitle = subtitle,
+      x = "Day of Week",
+      y = "Total Visits") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    annotate("label", x = Inf, y = Inf, 
+             label = paste("2024 Avg:", round(mean_24), "\n2025 Avg:", round(mean_25), "\n2026 Avg:", round(mean_26)),
+             hjust = 1, vjust = 1,
+             fill = "white", alpha = 0.8, size = 3,
+             color = "black")
+}
+
+# function for data tables
+
+comparison_table <- function(data, 
+                                page_length = 15,
+                                total_col = "Pass_Type") {
+  
+  datatable(data, options = list(pageLength = page_length)) |>
+    formatStyle(        
+      columns = 1:ncol(data),
+      target = "row",
+      fontWeight = styleEqual("Total", "bold"),
+      valueColumns = total_col) 
+}
+
+```
+
+```{r}
+#| label: create data to visualize
+
+# apply functions to create dataset
+TotalPassCompare <- create_pass_comparison(full_data)
+SRECPassCompare <- create_pass_comparison(south_rec)
+NRECPassCompare <- create_pass_comparison(north_rec)
+bd_recPassCompare <- create_pass_comparison(bd_rec)
+s91PassCompare <- create_pass_comparison(s91)
+unassignedCompare <- create_pass_comparison(unassigned)
+
+TotalPlotFinal <- create_plot(full_data, "Total Pass Usage by Day of the Week")
+SouthPlot <- create_plot(south_rec, "South Rec Pass Usage by Day of the Week")
+NorthPlot <- create_plot(north_rec, "North Rec Visits by Day of the Week")
+BDPlot <- create_plot(bd_rec, "Bear Down Rec Pass Usage by Day of the Week")
+s91Plot <- create_plot(s91, "Studio 91 Pass Usage by Day of the Week")
+unassignedPlot <- create_plot(unassigned, "Unassigned Pass Usage by Day of the Week") 
+
+SenSource <- tibble(Facility = "Bear Down Building", Visits24 = "6373", Visits25 = "1688", Visits26 = "1486")
+
+facility_overview <- bind_rows(
+  TotalPassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "Total Campus"),
+  SRECPassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "South Rec"),
+  NRECPassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "North Rec"),
+  bd_recPassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "Bear Down Rec"),
+  s91PassCompare |> filter(Pass_Type == "Total") |> mutate(Facility = "Studio 91"),
+  
+) |>
+  select(Facility, Visits24, Visits25, Visits26) |> 
+  mutate(across(c(Visits24, Visits25, Visits26), as.character)) |> 
+  bind_rows(SenSource)
+
+```
+
+### Overview
+
+```{r}
+
+datatable(
+  facility_overview,
+  options = list(
+    pageLength = 10,
+    dom = 't'
+  )
+) |>
+  formatStyle(        
+    columns = 1:ncol(facility_overview),
+    target = "row",
+    fontWeight = styleEqual("Total Campus", "bay_2024"),
+    valueColumns = "Facility"
+  )
+
+```
+
+<br>
+
+Some notes about last week:
+
+* In 2024, classes began a week earlier, explaining the spike in traffic for 2024.
+* Bear Down Rec doesn't show any activity from 1.6.2024 to 1.21.2024. If this doesn't seem right, let me know and I can dig in to see if the numbers are elsewhere. If there was a closure or gap in staff, you can expect to see the numbers for Bear Down Rec again beginning the last week in January.
+
+Percent change when comparing 2024 visits to 2026:  `r round(((TotalPassCompare[1, 4] / TotalPassCompare[1, 2]) - 1) * 100, 1)`%  
+Percent change when comparing 2025 visits to 2026:  `r round(((TotalPassCompare[1, 4] / TotalPassCompare[1, 3]) - 1) * 100, 1)`%
+
+### Weekly Review
+
+::: {.panel-tabset}
+
+### Total Campus
+
+```{r}
+#| label: Plot total visits
+
+print(TotalPlotFinal)
+```
+
+```{r}
+#| label: build datatable for all visits
+
+comparison_table(TotalPassCompare)
+```
+
+### South Rec
+
+```{r}
+#| label: Plot SREC
+
+print(SouthPlot)
+```
+
+```{r}
+#| label: build datatable for SREC
+
+comparison_table(SRECPassCompare)
+```
+
+### North Rec
+
+```{r}
+#| label: Plot NREC
+
+print(NorthPlot)
+```
+
+```{r}
+#| label: build NREC datatable
+
+comparison_table(NRECPassCompare)
+```
+
+### Bear Down Rec
+
+```{r}
+#| label: Plot bd_rec
+
+print(BDPlot)
+```
+
+```{r}
+#| label: build datatable for bd_rec
+
+comparison_table(bd_recPassCompare)
+```
+
+### Studio 91
+
+```{r}
+#| label: Studio 91 plot
+
+print(s91Plot)
+```
+
+```{r}
+#| label: build datatable for s91
+
+comparison_table(s91PassCompare)
+```
+
+### Unassigned 
+
+```{r}
+#| label: unassigned plot
+
+print(unassignedPlot)
+```
+
+```{r}
+#| label: build datatable for unassigned
+
+comparison_table(unassignedCompare)
+```
+
+:::
+
+<br>
+
+**Why is there an "unassigned" tab?**
+Mostly, these are passes counted for specific classes that aren't tied to a facility. Sometimes it'll catch student passes. They're here to ensure everything is complete.
+
+**Why is the total number of visits different from the Pass Visit Log summary in RecTrac?**
+To capture all pass usage, I've included additional passes, like Group Fitness passes, and excluded CREC Employee passes. So there is some overlap between students swiping in and then checking-in to their program. I've also hard-coded a two-minute coay_2024own for swipes, which doesn't appear to be applied to the Pass Visit Log in RecTrac.
+
+**Why isn't my program or pass represented in this report?**
+Great question. [Email me](mailto:jcbetts@arizona.edu?subject=Weekly%20Pass%20Report%20Question(s)) and we'll work to get it added!
